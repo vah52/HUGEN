@@ -22,7 +22,11 @@ Options in effect:
   --out data4
 
 192067 MB RAM detected; reserving 96033 MB for main workspace.
---bcf: 1k variants complete.--bcf: 2k variants complete.--bcf: 3k variants complete.--bcf: data4-temporary.bed + data4-temporary.bim + data4-temporary.fam written.
+
+--bcf: 1k variants complete.
+--bcf: 2k variants complete.
+--bcf: 3k variants complete.
+--bcf: data4-temporary.bed + data4-temporary.bim + data4-temporary.fam written.
 3261 variants loaded from .bim file.
 524 people (0 males, 0 females, 524 ambiguous) loaded from .fam.
 Ambiguous sex IDs written to data4.nosex .
