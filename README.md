@@ -1,3 +1,3 @@
-Repository for Genome Bioinformatics classes
+Repository for Genome Bioinformatics classes.
 
--- Vanessa Hong
+- Vanessa Hong
