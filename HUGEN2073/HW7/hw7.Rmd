@@ -1,0 +1,104 @@
+---
+title: "hw7"
+output: html_document
+date: "2026-04-20"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+## HUGEN 2073 HW 7
+
+-   Read the results .csv file into R and sort by pvalue (from most significant to least)
+
+```{r}
+d <- read.csv("hw7_results.csv")
+df <- d %>% arrange(pvalue)
+dim(df) # 7930 genes
+head(df)
+```
+
+-   Make a volcano plot of the results, that is, a plot of -log~10~(pvalue) vs. effect_size.
+
+    -   You may want to use the “xlim” argument to change the viewing window (look up what a volcano plot looks like if you’re unfamiliar; if you set xlim appropriately, you will get something that looks at least a little like a typical volcano plot).
+
+    -   Add a horizontal line to the plot showing the Bonferroni-adjusted significance threshold adjusting for the number of genes tested (genes, not SNPs; assume all the genes are independent).
+
+    -   Label the 3 most significant genes on the plot (use gene_name).
+
+    -   Save the plot as a vector graphic (not a screenshot).
+
+```{r}
+# Bonferroni-adjusted significance threshold: 0.05)/number of genes
+bonf <- 0.05/nrow(df)
+bonf # threshold: 6.30517e-06
+
+# find top 3 most sig genes
+sig <- df[1:3, ]
+
+ggplot(df, aes(x = effect_size, y = -log10(pvalue))) +
+  geom_point(alpha = 0.5) +
+  xlim(-2, 2) +
+  geom_hline(yintercept = -log10(bonf), color = "red") + # bonferonni line
+  geom_text(data = sig, aes(label = gene_name), vjust = -0.3) # 3 most sig genes
+
+ggsave("hw7_volcano.pdf")
+```
+
+-   **Investigate the 3 most significant genes further**
+
+    -   **Record their gene_names, pvalues, and effect_sizes**
+
+        > The top 3 genes are:
+        >
+        > [CCR5]{.underline}
+        >
+        > -   p-value: 8.499364e-16
+        > -   effect size: -1.2718632
+        >
+        > [TYK2]{.underline}
+        >
+        > -   p-value: 1.734110e-05
+        > -   effect size: 0.7828881
+        >
+        > [CXCR6]{.underline}
+        >
+        > -   p-value: 1.623082e-04
+        >
+        > <!-- -->
+        >
+        > -   effect size: -0.5670695
+
+    -   **Do they seem relevant to the phenotype? Have other studies implicated them? Write a sentence or two summarizing the relevance of each gene. If possible, comment on the effect direction you saw vs. effect directions in relevant studies. (Hint: search PubMed with a term like “gene_name covid”; you shouldn’t have to spend more than 5-10 minutes on each gene)**
+
+        > I did a very quick search and mostly grabbed results from the front page. All three of these genes certainly seem relevant to the phenotype.
+        >
+        > [CCR5]{.underline}-- "Rationale of using the dual chemokine receptor CCR2/CCR5 inhibitor cenicriviroc for the treatment of COVID-19" ([https://pubmed.ncbi.nlm.nih.gov/35749425/](#0){.uri})
+        >
+        > [TYK2]{.underline}-- "TYK2 single-nucleotide variants associated with the severity of COVID-19 disease" ([https://pubmed.ncbi.nlm.nih.gov/36959416/](#0){.uri})
+        >
+        > [CXCR6]{.underline}-- "Association of CXCR6 with COVID-19 severity: Delineating the host genetic factors in transcriptomic regulation" ([https://pubmed.ncbi.nlm.nih.gov/33619490/](#0){.uri})
+
+    -   **Get the gene_names for genes with p \< 0.01 (even though that’s probably far too liberal). How many are there?**
+
+        > There are 102 genes where p \< 0.01.
+
+    -   **Write these to a text file with one gene_name per line, without quotation marks, and without row/column names. The genes should be sorted, most significant to least significant.**
+
+```{r}
+# the top 3 genes are: CCR5, TYK2, CXCR6  
+top3
+
+# Get the gene_names for genes with p < 0.01
+top <- df[df$pvalue <0.01, ]
+top # 102 genes 
+
+writeLines(top$gene_name, "genes.txt")
+```
+
+note for FUMA step: only significant gene set was *Cell type signatures (MsigDB c8)* (2)
